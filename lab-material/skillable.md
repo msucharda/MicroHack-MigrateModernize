@@ -107,6 +107,8 @@ With this assistant, you can:
 
 We have found our first target application to be migrated: `Contoso University`
 
+TODO: It would be better to fork the repo, and be able to commit
+
 1. [] Since we are going to modernize it first, lets get in the shoes of the developers that will execute the migration
 
   1. [ ] Open Visual Studio
@@ -149,10 +151,42 @@ The first step is to do a code assessment. For that we will use GitHub Copilot f
 We will do the migration in two steps. First we will upgrade the application to the latest DotNet, since many packages are outdated with known security vulnerabilities,
 
 1. [ ] Right click in the project, and select `Modernize`
+2. [ ] Click in `Accept upgrade settings and continue`. Make sure you send the message
 
 !IMAGE[0050.png](https://raw.githubusercontent.com/crgarcia12/migrate-modernize-lab/refs/heads/main/lab-material/media/0050.png)
 
 Let s review copilot proposal
+
+TODO: Point to some details
+
+3. [ ] Review the proposed plan.
+4. [ ] Ask what is the most risky part of the upgrade
+5. [ ] Ask if there are security vulnerabilities in the current solution
+6. [ ] Ask copilot to perform the upgrade
+7. [ ] Try to clean and build the solution
+8. [ ] If there are erros, tell copilot to fix the errors using the chat
+9. [ ] Run the application again, this time as a standalone DotNet application
+
+!IMAGE[0060.png](https://raw.githubusercontent.com/crgarcia12/migrate-modernize-lab/refs/heads/main/lab-material/media/0060.png)
+
+> [!Hint] If you see an error at runtime. Try asking copilot to fix it for you.
+>
+> For example, you can paste the error message and let Copilot fix it. For example: `SystemInvalidOperation The ConnectionString has not been initialized.` 
+
+TODO: See the lists of commit, if we managed to fork the repo
+
+===
+
+# Modernization part 2: Prepare for cloud
+
+We have upgraded an eight years old application, to the latest version of DorNet.
+Lets now find out if we can host it in a modern PaaS service
+
+1. [ ] Right click in the project, and select `Modernize`
+
+
+=== 
+TODO: CRGARCIA OLD 
 ===
 
 > [!IMPORTANT]
@@ -1190,4 +1224,3 @@ The App Modernization for .NET deployment feature helps you deploy your migrated
 - Copilot can need a few iterations to fix deployment errors.
 
 ===
-
