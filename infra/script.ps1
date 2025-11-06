@@ -7,7 +7,7 @@ $migrateProjectName = "${environmentName}-azm"
 
 $apiVersionOffAzure = "2024-12-01-preview"
 
-$remoteZipFilePath = "https://github.com/crgarcia12/migrate-modernize-lab/raw/refs/heads/main/lab-material/Azure-Migrate-Discovery.zip"
+$remoteZipFilePath = "https://github.com/crgarcia12/migrate-modernize-lab/raw/refs/heads/main/lab-material/Azure-Migrate-Discovery-light.zip"
 $localZipFilePath = Join-Path (Get-Location) "importArtifacts.zip"
 
 # Create resource group and deploy ARM template
