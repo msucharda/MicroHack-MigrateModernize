@@ -4,8 +4,9 @@ Set-StrictMode -Version 3.0
 ##############   CONFIGURATIONS   ###################
 ######################################################
 
-$SkillableEnvironment = $true
+$SkillableEnvironment = $false
 $environmentName = "crgmig25" # Set your environment name here for non-Skillable environments
+$ScriptVersion = "1.0.0"
 
 ######################################################
 ##############   INFRASTRUCTURE FUNCTIONS   #########
@@ -106,16 +107,25 @@ function New-AzureEnvironment {
 ##############   LOGGING FUNCTIONS   ################
 ######################################################
 
+# Script-level variable to track if logging has been initialized
+$script:LoggingInitialized = $false
+
 function Write-LogToBlob {
     param(
         [string]$Message,
         [string]$Level = "INFO"
     )
     
-    # Hardcoded storage account data
+    # Blob storage configuration for logging
     $STORAGE_SAS_TOKEN = "?sv=2024-11-04&ss=bfqt&srt=sco&sp=rwdlacupiytfx&se=2026-01-30T22:09:19Z&st=2025-11-05T13:54:19Z&spr=https&sig=mBoL3bVHPGSniTeFzXZ5QdItTxaFYOrhXIOzzM2jvF0%3D"
     $STORAGE_ACCOUNT_NAME = "azmdeploymentlogs"
     $CONTAINER_NAME = "logs"
+    
+    # Auto-initialize logging if not already done
+    if ($SkillableEnvironment -eq $true -and -not $script:LoggingInitialized) {
+        Initialize-LogBlob -StorageAccountName $STORAGE_ACCOUNT_NAME -SasToken $STORAGE_SAS_TOKEN -ContainerName $CONTAINER_NAME -EnvironmentName $environmentName
+    }
+    
     $LOG_BLOB_NAME = "$environmentName.log.txt"
     
     $timestamp = Get-Date -Format "yyyy-MM-dd HH:mm:ss"
@@ -131,9 +141,7 @@ function Write-LogToBlob {
     # Write to blob using Az.Storage commands
     try {
         # Create storage context using SAS token
-        $ctx = New-AzStorageContext -StorageAccountName $STORAGE_ACCOUNT_NAME -SasToken $STORAGE_SAS_TOKEN
-        
-        # Get existing blob content to append
+        $ctx = New-AzStorageContext -StorageAccountName $STORAGE_ACCOUNT_NAME -SasToken $STORAGE_SAS_TOKEN        # Get existing blob content to append
         $existingContent = ""
         try {
             Get-AzStorageBlobContent -Blob $LOG_BLOB_NAME -Container $CONTAINER_NAME -Context $ctx -Force -Destination "$env:TEMP\templog.txt" -ErrorAction Stop | Out-Null
@@ -164,41 +172,52 @@ function Write-LogToBlob {
 }
 
 function Initialize-LogBlob {
-    # Hardcoded storage account data
-    $STORAGE_SAS_TOKEN = "?sv=2024-11-04&ss=bfqt&srt=sco&sp=rwdlacupiytfx&se=2026-01-30T22:09:19Z&st=2025-11-05T13:54:19Z&spr=https&sig=mBoL3bVHPGSniTeFzXZ5QdItTxaFYOrhXIOzzM2jvF0%3D"
-    $STORAGE_ACCOUNT_NAME = "azmdeploymentlogs"
-    $CONTAINER_NAME = "logs"
-    $LOG_BLOB_NAME = "$environmentName.log.txt"
+    param(
+        [string]$StorageAccountName,
+        [string]$SasToken,
+        [string]$ContainerName,
+        [string]$EnvironmentName
+    )
+    
+    # Skip initialization if already done
+    if ($script:LoggingInitialized) {
+        return
+    }
+    
+    $LOG_BLOB_NAME = "$EnvironmentName.log.txt"
     
     if (-not $SkillableEnvironment) {
-        Write-LogToBlob "Skillable environment disabled, skipping blob logging initialization"
+        Write-Host "Skillable environment disabled, skipping blob logging initialization" -ForegroundColor Yellow
+        $script:LoggingInitialized = $true
         return
     }
 
     try {
-        $ctx = New-AzStorageContext -StorageAccountName $STORAGE_ACCOUNT_NAME -SasToken $STORAGE_SAS_TOKEN
+        $ctx = New-AzStorageContext -StorageAccountName $StorageAccountName -SasToken $SasToken
         
-        $initialLog = "=== Script execution started at $(Get-Date -Format 'yyyy-MM-dd HH:mm:ss') ===`nEnvironment: $environmentName`n"
+        $initialLog = "=== Script [$ScriptVersion] execution started at $(Get-Date -Format 'yyyy-MM-dd HH:mm:ss') ===`nEnvironment: $EnvironmentName`n"
         
         $tempFile = "$env:TEMP\$([System.Guid]::NewGuid()).txt"
         Set-Content -Path $tempFile -Value $initialLog -NoNewline
         
-        Set-AzStorageBlobContent -File $tempFile -Blob $LOG_BLOB_NAME -Container $CONTAINER_NAME -Context $ctx -Force | Out-Null
+        Set-AzStorageBlobContent -File $tempFile -Blob $LOG_BLOB_NAME -Container $ContainerName -Context $ctx -Force | Out-Null
         Remove-Item $tempFile -Force -ErrorAction SilentlyContinue
         
         Write-Host "Initialized log blob: $LOG_BLOB_NAME" -ForegroundColor Green
+        $script:LoggingInitialized = $true
         
     }
     catch {
         Write-Host "Failed to initialize log blob: $($_.Exception.Message)" -ForegroundColor Red
-        Write-Host "Check if storage account '$STORAGE_ACCOUNT_NAME' and container '$CONTAINER_NAME' exist" -ForegroundColor Red
+        Write-Host "Check if storage account '$StorageAccountName' and container '$ContainerName' exist" -ForegroundColor Red
         Write-Host "Also verify SAS token permissions and expiration" -ForegroundColor Red
         
         # Fallback to local file
         $localLogFile = ".\script-execution.log"
-        $initialLog = "=== Script execution started at $(Get-Date -Format 'yyyy-MM-dd HH:mm:ss') ===`nEnvironment: $environmentName`n"
+        $initialLog = "=== Script execution started at $(Get-Date -Format 'yyyy-MM-dd HH:mm:ss') ===`nEnvironment: $EnvironmentName`n"
         Set-Content -Path $localLogFile -Value $initialLog -NoNewline
         Write-Host "Created local log file as fallback: $localLogFile" -ForegroundColor Yellow
+        $script:LoggingInitialized = $true
     }
 }
 
@@ -1107,17 +1126,16 @@ function Invoke-AzureMigrateConfiguration {
     $vmwareSiteName = "${environmentName}vmwaresite"
     $webAppSiteName = "${environmentName}webappsite"
     $sqlSiteName = "${environmentName}sqlsites"
-   
-    Write-LogToBlob "=== Starting Azure Migrate Configuration ==="
-    Write-LogToBlob "Environment: $EnvironmentName"
-    Write-LogToBlob "Skillable Mode: $SkillableEnvironment"
-    Write-LogToBlob "Resource Group: $resourceGroupName"
-    Write-LogToBlob "Location: $location"
     
     try {
-        # Step 1: Initialize modules and logging
+        # Step 1: Initialize modules and log the start
+        Write-LogToBlob "=== Starting Azure Migrate Configuration ==="
+        Write-LogToBlob "Environment: $environmentName"
+        Write-LogToBlob "Skillable Mode: $SkillableEnvironment" 
+        Write-LogToBlob "Resource Group: $resourceGroupName"
+        Write-LogToBlob "Location: $location"
+        
         Import-AzureModules
-        Initialize-LogBlob
 
         # Step 2: Create Azure environment (skip if Skillable)
         if (-not $SkillableEnvironment) {
