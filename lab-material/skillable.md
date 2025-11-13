@@ -159,29 +159,69 @@ In the Discover page
 1. [ ] Click Finish, and start the new VM by doing right click **Start** 
 1. [ ] Double click in the VM to open a Remote Desktop to it. Initially, it will have a back scree for several minutes until it starts
 
+You have now an appliance up and running in your server. This appliance will scan all the VMs and collect all neded information to be able to plan a migration. Now, we need to configure the appliance in order it is able to run a scan on the environment
+
 
 ===
 
-### Configure the appliance - in progress
-1. [ ] Assign a password for the appliance. You can use +++demo!pass123+++
-2. [ ] Send a **Ctrl+Alt+Del** command and log in into the VM
+### Connect to the appliance
+
+We will now configure the appliance.
+
+1. [ ] Start by accepting the License terms
+1. [ ] Assign a password for the appliance. Use +++Demo!pass123+++
+1. [ ] Send a **Ctrl+Alt+Del** command and log in into the VM
 
 	> [+Hint] Do you know how to send Ctrl+Alt+Del to a VM?
   	>
   	> ![Screenshot](https://raw.githubusercontent.com/crgarcia12/migrate-modernize-lab/refs/heads/main/lab-material/media/0093.png)
 
-3. [ ] Paste the Key we got before. This will take several minutes.
-       Your key was: ++@lab.Variable(MigrateApplianceKey)++
+===
+
+### Connect the appliance to Azure Migrate
+
+Once we login, the machine will configure itself. Wait until the browser displays the Azure Migrate Appliance Configuration. This will take about 4 minutes
+
+1. [ ] Agree to the Term of use and wait until it checks the connectivity to Azure
+	> [+Hint] Screenshot
+  	>
+  	> ![Screenshot](https://raw.githubusercontent.com/crgarcia12/migrate-modernize-lab/refs/heads/main/lab-material/media/00932.png)
+
+1. [ ] Paste the Key we got while creating the Appliance into the Azure Portal, and click **Verify**. 
+
+   During this process, the appliance software is updated. This will take several minutes and will require to refresh the page.
+
+    > [+Hint] Your key was: 
+    > ++@lab.Variable(MigrateApplianceKey)++
+
+
 	> [+Hint] If Copy & Paste does not work
   	>
   	> You can type the clipboard in the VM
     > ![Screenshot](https://raw.githubusercontent.com/crgarcia12/migrate-modernize-lab/refs/heads/main/lab-material/media/0094.png)
 
-4. [ ] Follow the instructions to login to your azure account.
-			 Remember that the credentials are in the Resources tab.
-6. [ ] In step 2, provide Hyper-V host credentials. 
-    > username: +++adminuser+++
-    > password: +++demo!pass123+++
+1. [ ] Login to Azure. If the **Login** button is grayed out, you need to **Verify** the key from the previous step again
+
+    > [+Hint] Hint
+    >
+	> Remember that the credentials are in the **Resources** tab.
+    > ![Screenshot](https://raw.githubusercontent.com/crgarcia12/migrate-modernize-lab/refs/heads/main/lab-material/media/00945.png)
+
+
+You have now connected the Appliance to your Azure Migrate project. In the next steps we will provide credentials for the appliance to be able to scan your Hyper-V environment
+
+===
+
+### Configure the appliance
+
+Once the appliance finishes Registering, you will be able to see it in the Azure Portal, but still it cannot scan your servers because it does not have a way to authenticate.
+We will now provide Hyper-V host credentials. The appliance will use these credentials to scan Hyper-V and discover all servers
+
+1. [ ] In step 2 **Manage credentials and discovery sources**, click in **Add credentials**
+
+    username: +++adminuser+++
+    
+    password: +++demo!pass123+++
 
 ===
 
@@ -377,3 +417,6 @@ Lets now find out if we can host it in a modern PaaS service
        Notice that the report can be exported and shared with other developers in the top right corner
 4. Now, let's run the Mandatory Issue: Windows Authenticatio. Click in `Run Task`
 > !IMAGE[0080.png](https://raw.githubusercontent.com/crgarcia12/migrate-modernize-lab/refs/heads/main/lab-material/media/0080.png)
+
+
+
