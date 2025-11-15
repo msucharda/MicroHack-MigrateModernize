@@ -197,20 +197,45 @@ TODO: insert keep image here
 
 ===
 
+# 3.4 Deploy .NET app to Azure
 
-# Modernization part 2: Prepare for cloud
+Next we want to deploy our modernized application to Azure App Service.
 
-We have upgraded an eight years old application, to the latest version of DorNet.
-Lets now find out if we can host it in a modern PaaS service
+## 1) Visual Studio
 
-1. [ ] Right click in the project, and select `Modernize`
-2. [ ] This time, we will select Migrate to Azure. Don't forget to send the message!
+1. Right click in the project, and select `Modernize`
+2. This time, we will select Migrate to Azure. Don't forget to send the message!
 > !IMAGE[0070.png](https://raw.githubusercontent.com/crgarcia12/migrate-modernize-lab/refs/heads/main/lab-material/media/0070.png)
 
-3. [ ] Copilot made a detailed report for us. Let's take a look at it
+3. Copilot made a detailed report for us. Let's take a look at it
        Notice that the report can be exported and shared with other developers in the top right corner
 4. Now, let's run the Mandatory Issue: Windows Authenticatio. Click in `Run Task`
 > !IMAGE[0080.png](https://raw.githubusercontent.com/crgarcia12/migrate-modernize-lab/refs/heads/main/lab-material/media/0080.png)
+
+## 2) Visual Studio Code
+
+1. Open the Extensions tab again and install the extension *Bicep* (Microsoft's IaC language) and the *Azure MCP Server*
+2. Open a fresh new window of GitHub Copilot Chat and click on *Tools*. Checkmark the *Bicep* and *Azure MCP Server* tools and save the changes by clicking on *OK*. This ensures GitHub Copilot has all the tools it needs to deploy to Azure.
+
+TODO: insert image of tools window here
+
+> [!Hint] The more tools you enable, the longer GitHub Copilot needs to respond. Be mindful of your tool selection.
+
+3. Use the following prompt to deploy the application to Azure:
+
+*I would like to deploy the modernized .NET application to Azure App Service. Please have a look at the existing infra folder and check if it needs to be updated. If so, apply the necessary changes. Then create the infrastructure and deploy the application with the Azure Developer CLI.*
+
+Again you may be asked to allow certain executions of commands and changes. Allow them. When the deployment starts you will output in the terminal window that asks for your input. If GitHub Copilot has not already created an environment, create a new one. Select your Azure subscription, create a new resource group. If the deployment fails, GitHub Copilot will again try to fix the errors itself. 
+
+> [!Hint] If the deployment fails, no worries. The Azure Developer CLI remembers your previous inputs. Just let GitHub Copilot re-try it.
+
+> [!Hint] The actual deployment will start with the execution of the command *azd up*, this may take a while. You may see problems, that there is maybe no quota available in a specific region. Just let GitHub Copilot change the region and re-try it. Just stop it, and bring it back on track if it tries to change from Azure App Service to another PaaS service.
+
+4. When the deployment is successful, you will see the URL of your deployed application in the terminal window. Open it in your browser to verify that everything is working as expected.
+
+TODO: add screenshot of terminal with URL
+
+5. Congratulations! You have successfully modernized and deployed your .NET application with the help of GitHub Copilot. Click next to continue.
 
 
 ===
