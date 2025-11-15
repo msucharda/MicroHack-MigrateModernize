@@ -4,9 +4,9 @@
 ##############   CONFIGURATIONS   ###################
 ######################################################
 
-$SkillableEnvironment = $true
-$EnvironmentName = "" # Set your environment name here for non-Skillable environments
-$ScriptVersion = "9.0.0"
+$SkillableEnvironment = $false
+$EnvironmentName = "crgmig4" # Set your environment name here for non-Skillable environments
+$ScriptVersion = "10.0.0"
 
 ######################################################
 ##############   INFRASTRUCTURE FUNCTIONS   #########
@@ -50,23 +50,41 @@ function Get-AuthenticationHeaders {
     }
 }
 
-function Get-EnvironmentLocation {
+function Get-Location {
     param(
-        [string]$ResourceGroupName
+        [string]$SubscriptionId,
+        [string]$ResourceGroupName,
+        [string]$MigrateProjectName,
+        [bool]$IsSkillableEnvironment
     )
     
-    # Determine resource group name based on environment type   
-    try {
-        $existingRg = Get-AzResourceGroup -Name $ResourceGroupName -ErrorAction SilentlyContinue
-        if ($existingRg) {
-            return $existingRg.Location
-        } else {
-            Write-LogToBlob "Resource group '$ResourceGroupName' not found. Defaulting to 'swedencentral'." -Level "WARN"
-            return "swedencentral"  # Default to Sweden as requested
+    $defaultLocation = "southcentralus"
+    Write-LogToBlob "Determining location for operations"
+    
+    # If Skillable environment, try to get location from MigrateProject
+    if ($IsSkillableEnvironment) {
+        try {
+            Write-LogToBlob "Skillable environment detected - attempting to retrieve location from Migrate Project: $MigrateProjectName"
+            $headers = Get-AuthenticationHeaders
+            $migrateProjectUri = "https://management.azure.com/subscriptions/$SubscriptionId/resourceGroups/$ResourceGroupName/providers/Microsoft.Migrate/MigrateProjects/$MigrateProjectName" + "?api-version=2020-06-01-preview"
+            
+            $response = Invoke-RestMethod -Uri $migrateProjectUri -Method GET -Headers $headers -ContentType 'application/json'
+            
+            if ($response -and $response.location) {
+                Write-LogToBlob "Using Migrate Project location: $($response.location)"
+                return $response.location
+            } else {
+                Write-LogToBlob "Migrate Project location not available, using default location: $defaultLocation" -Level "WARN"
+                return $defaultLocation
+            }
+        } catch {
+            Write-LogToBlob "Could not retrieve Migrate Project location: $($_.Exception.Message). Using default location: $defaultLocation" -Level "WARN"
+            return $defaultLocation
         }
-    } catch {
-        Write-LogToBlob "Error retrieving resource group: $($_.Exception.Message). Defaulting to 'swedencentral'." -Level "ERROR"
-        return "swedencentral"  # Fallback to Sweden
+    } else {
+        # Non-Skillable environment: use default location (MigrateProject doesn't exist yet)
+        Write-LogToBlob "Non-Skillable environment - using default location: $defaultLocation"
+        return $defaultLocation
     }
 }
 
@@ -1244,22 +1262,24 @@ function Invoke-AzureMigrateConfiguration {
     
     # Environment name and prefix for all azure resources
     if ($SkillableEnvironment) {
-        $environmentName = "<LABINSTANCEID>"
+        $EnvironmentName = "<LABINSTANCEID>"
     }
     else {
-        $environmentName = $EnvironmentName
+        $EnvironmentName = $EnvironmentName
     }
 
     # Define all resource names
     $subscriptionId = (Get-AzContext).Subscription.Id
-    $resourceGroupName = if ($SkillableEnvironment) { "on-prem" } else { "${environmentName}-rg" }
-    $location = Get-EnvironmentLocation -ResourceGroupName $resourceGroupName
-    $masterSiteName = "${environmentName}mastersite"
-    $migrateProjectName = "${environmentName}-azm"
-    $assessmentProjectName = "${environmentName}asmproject"
-    $vmwareSiteName = "${environmentName}vmwaresite"
-    $webAppSiteName = "${environmentName}webappsite"
+    $resourceGroupName = if ($SkillableEnvironment) { "on-prem" } else { "${EnvironmentName}-rg" }
+    $migrateProjectName = "${EnvironmentName}-azm"
+    $assessmentProjectName = "${EnvironmentName}asmproject"
+    $vmwareSiteName = "${EnvironmentName}vmwaresite"
+    $webAppSiteName = "${EnvironmentName}webappsite"
     $sqlSiteName = "${environmentName}sqlsites"
+    $masterSiteName = "${EnvironmentName}mastersite"
+    
+    # Get the location for all operations
+    $location = Get-Location -SubscriptionId $subscriptionId -ResourceGroupName $resourceGroupName -MigrateProjectName $migrateProjectName -IsSkillableEnvironment $SkillableEnvironment
     
     # Log all variable values
     Write-LogToBlob "===============================  VARIABLES ================================"
