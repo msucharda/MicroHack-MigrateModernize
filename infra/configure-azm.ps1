@@ -1117,12 +1117,9 @@ function New-GlobalAssessment {
         $heteroApiVersion = "2025-09-09-preview"
         
         $heteroAssessmentBody = @{
-            "type" = "Microsoft.Migrate/assessmentProjects/heterogeneousAssessments"
-            "apiVersion" = "$heteroApiVersion"
-            "name" = "$AssessmentProjectName/$heteroAssessmentName"
+            "kind" = "Migrate"
             "location" = $Location
             "tags" = @{}
-            "kind" = "Migrate"
             "properties" = @{
                 "assessmentArmIds" = @(
                     $VmAssessmentId,
