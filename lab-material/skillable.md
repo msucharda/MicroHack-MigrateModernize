@@ -95,13 +95,14 @@ We will now create another VM and install the Azure Migrate Appliance
 
 ===
 ### Create Azure Migrate Project
-Let's now create an Azure Migrate project
+Let's now create an Azure Migrate project 
 
-1. [ ] Go back to the Azure Portal and in the search bar look for +++Azure Migrate+++
-2. [ ] Click **Create Project**
-3. [ ] Use the existing Resource Group: +++on-prem+++
-4. [ ] Enter a project name. For example +++migrate-prj+++
-5. [ ] Select a region. For example +++@lab.CloudResourceGroup(on-prem).Location+++
+1. [ ] For the next few steps you will complete them on the Skillable VM, *not* the Hyper-V machine you opened in the previous activity.  You can hit the minimize button in the Hyper-V machine to get back to your Skillable VM.
+2. [ ] Open Edge, launch the Azure Portal and in the search bar look for +++Azure Migrate+++
+3. [ ] Click **Create Project**
+4. [ ] Use the existing Resource Group: +++on-prem+++
+5. [ ] Enter a project name. For example +++migrate-prj+++
+6. [ ] Select a region. For example +++Canada+++
 
 
 ===
@@ -915,7 +916,16 @@ Click in Upgrade Java Runtime & Frameworks
 
 # Preparation
 
-Open the Terminal, and run 
+1. [ ] Open the browser and navigate to +++https://github.com/enterprises/skillable-events/+++
+2. [ ] Authenticate with your Azure credentials
+
+> [+Hint] How to find your Azure credentials
+>
+> ![Screenshot](https://raw.githubusercontent.com/crgarcia12/migrate-modernize-lab/refs/heads/main/lab-material/media/0010.png)
+
+4. [ ] Open **Docker Desktop** from the windows menu. Wait until the Docker desktop screen shows up
+5. [ ] Open the **Terminal**, and run 
+
 ```
 mkdir C:\gitrepos\lab
 cd  C:\gitrepos\lab
@@ -924,18 +934,41 @@ cd .\migrate-modernize-lab\src\AssetManager\
 code .
 exit
 ```
-
 This script will clone a repo with the Java application, and open VS code on that path.
+
+1. [ ] Login to GitHub Enterprise form VS Code.
+
+> [+Hint] How to login to GitHub from VSCode
+>
+> In visual studio, click on the copilot icon on the top, next to the search bar. Then click in Continue with GitHub. Follow the instructions in the browser
+> ![Screenshot](https://raw.githubusercontent.com/crgarcia12/migrate-modernize-lab/refs/heads/main/lab-material/media/02003.png)
+
 
 Next let's begin our modernization work. 
 
 ===
 Let's first run the application.
 
-1. [] Go to the menu **View** -> **Terminal** 
-2. [ ] If the **pwsh** terminal is missing, click the + symbol and select **New Terminal**`
+1. [ ] Go to the menu **View** -> **Terminal** 
+1. [ ] If the **pwsh** terminal is missing, click the + symbol and select **New Terminal**` as shown in the picture bellow
 
-In the terminal window, run ```scripts\startapp.cmd```
+> [+Hint] Screenshot
+>
+> ![Screenshot](https://raw.githubusercontent.com/crgarcia12/migrate-modernize-lab/refs/heads/main/lab-material/media/02002.png)
+
+1. [ ] In the terminal window, run ```scripts\startapp.cmd```
+
+
+The first time you run the applications will take some time, because Docker will pull diferent container images like RabbitMQ. <br>
+If you get ask to grant permissions for Docker, Java or other applications to get Internet or private network access, allow it.
+
+Once both consoles are running, you should be able to open the browser and navigate to  +++http://localhost:8080+++
+
+ ![Screenshot](https://raw.githubusercontent.com/crgarcia12/migrate-modernize-lab/refs/heads/main/lab-material/media/02004.png)
+
+You can now close the application, by closing the consoles that were open
+
+
 ===
 
 1. Select  `GitHub Copilot app modernization` extension
@@ -958,11 +991,13 @@ In the terminal window, run ```scripts\startapp.cmd```
 	!IMAGE[appcat-install.png](instructions310381/appcat-install.png) -->
 
 > [!hint] You can follow the progress of the upgrade by looking at the Terminal in vscode
-!IMAGE[assessment-rules.png](https://raw.githubusercontent.com/crgarcia12/migrate-modernize-lab/refs/heads/main/lab-material/media/assessment-rules.png)
+!IMAGE[assessment-rules.png](https://raw.githubusercontent.com/crgarcia12/migrate-modernize-lab/refs/heads/main/lab-material/media/02005.png)
 
 <!-- Also note that you might be prompted to allow access to the language models provided by GitHub Copilot Chat. Click on **Allow**
 
 !IMAGE[ghcp-allow-llm.png](instructions310381/ghcp-allow-llm.png) -->
+
+---
 
 ### Overview of the Assessment
 
@@ -1007,26 +1042,27 @@ Choose how deep AppCAT should inspect the project.
 >      - azure-aks
 >      - azure-appservice
 >      - azure-container-apps
->      - cloud-readiness
 >    mode: source-only
 >```
 >
 >If you want a broader scan (including dependency checks) change `mode` to `full`, or add/remove entries under `target` to focus recommendations on a specific runtime or Azure compute service.
 
+===
+
 ### Review the Assessment results
 
 After the assessment completes, you'll see a success message in the GitHub Copilot chat summarizing what was accomplished:
 
-!IMAGE[module2-assessment-report-overview.png](instructions310381/module2-assessment-report-overview.png)
+!IMAGE[assessment report](https://raw.githubusercontent.com/crgarcia12/migrate-modernize-lab/refs/heads/main/lab-material/media/02006.png)
 
-The assessment analyzed the Spring Boot Petclinic application for cloud migration readiness and identified the following:
+The assessment analyzed the Asset Manager application for cloud migration readiness and identified the following:
 
 Key Findings:
 
-* 8 cloud readiness issues requiring attention (1)
-* 1 Java upgrade opportunity for modernization (2)
+* 9 cloud readiness issues requiring attention
+* 4 Java upgrade opportunity for modernization
 
-**Resolution Approach:** More than 50% of the identified issues can be automatically resolved through code and configuration updates using GitHub Copilot's built-in app modernization capabilities (3).
+**Resolution Approach:** More than 78% of the identified issues can be automatically resolved through code and configuration updates using GitHub Copilot's built-in app modernization capabilities.
 
 **Issue Prioritization:** Issues are categorized by urgency level to guide remediation efforts:
 
