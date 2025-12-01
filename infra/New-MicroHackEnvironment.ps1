@@ -189,7 +189,7 @@ function New-AzureEnvironment {
         New-AzResourceGroupDeployment `
             -Name $EnvironmentName `
             -ResourceGroupName $ResourceGroupName `
-            -TemplateFile $templateFile `
+            -TemplateFile $templateFilePath `
             -prefix $EnvironmentName `
             -Verbose
         
