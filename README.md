@@ -4,8 +4,6 @@
 
 This MicroHack scenario walks through a complete migration and modernization journey using Azure Migrate and GitHub Copilot. The experience covers discovery, assessment, business case development, and application modernization for both .NET and Java workloads.
 
-
-
 ## MicroHack Context
 
 This MicroHack provides hands-on experience with the entire migration lifecycle - from initial discovery of on-premises infrastructure through to deploying modernized applications on Azure. You'll work with a simulated datacenter environment and use AI-powered tools to accelerate modernization.
@@ -16,6 +14,14 @@ This MicroHack provides hands-on experience with the entire migration lifecycle 
 - Azure App Service for hosting modernized applications
 - Microsoft Entra ID for cloud authentication
 - Azure Blob Storage for cloud-native storage
+
+## Environment creation
+```Powershell
+# Download and execute the environment creation script directly from GitHub
+Invoke-WebRequest -Uri "https://raw.githubusercontent.com/crgarcia12/migrate-modernize-lab/main/infra/New-MicroHackEnvironment.ps1" -OutFile "$env:TEMP\New-MicroHackEnvironment.ps1"
+& "$env:TEMP\New-MicroHackEnvironment.ps1"
+```
+
 
 **Business Scenario:**
 You're working with an organization that has on-premises infrastructure running .NET and Java applications. Your goal is to assess the environment, build a business case for migration, and modernize applications using best practices and AI assistance.

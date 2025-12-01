@@ -2,6 +2,17 @@
 
 This folder contains infrastructure-as-code templates for deploying a comprehensive Azure Migrate demo environment that simulates an on-premises environment and Azure migration scenarios.
 
+## Quick Start
+
+To deploy the lab to Azure:
+
+1. Navigate to the `infra` folder
+2. Run the deployment script:
+
+```powershell
+.\New-MicroHackEnvironment.ps1
+```
+
 ## Overview
 
 The infrastructure consists of different components
@@ -98,7 +109,7 @@ The Terraform configuration creates VM host environments:
 
 ### PowerShell Scripts
 
-#### `configure-azm.ps1`
+#### `New-MicroHackEnvironment.ps1`
 Configuration script that:
 - Imports Azure PowerShell modules
 - Configures Azure Migrate project
@@ -109,7 +120,7 @@ Configuration script that:
 
 #### `download-and-configure.ps1`
 Wrapper script that:
-- Downloads the latest configure-azm.ps1 from GitHub
+- Downloads the latest New-MicroHackEnvironment.ps1 from GitHub
 - Executes the configuration script non-interactively
 - Handles logging to Azure Blob Storage
 
@@ -218,7 +229,7 @@ terraform apply -var="location=swedencentral" -var="vmpassword=YourStrongPasswor
 ./download-and-configure.ps1
 
 # Option 2: Run configuration directly
-./configure-azm.ps1
+./New-MicroHackEnvironment.ps1
 ```
 
 #### VM Setup (for Terraform-created VMs)

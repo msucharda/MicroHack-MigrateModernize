@@ -1,9 +1,9 @@
 # Download and Configure Azure Migrate Script
-# This script downloads the configure-azm.ps1 script from GitHub and executes it
+# This script downloads the New-MicroHackEnvironment.ps1 script from GitHub and executes it
 # Designed for non-interactive execution
 
 # Configuration
-$ScriptUrl = "https://github.com/crgarcia12/migrate-modernize-lab/raw/refs/heads/main/infra/configure-azm.ps1"
+$ScriptUrl = "https://github.com/crgarcia12/migrate-modernize-lab/raw/refs/heads/main/infra/New-MicroHackEnvironment.ps1"
 $ScriptVersion = "9.0.0"
 
 # Environment configuration for this script
@@ -121,7 +121,7 @@ Write-DownloadLogToBlob "Current PowerShell execution policy: $CurrentExecutionP
 
 try {
     # Create a temporary file path
-    $TempScriptPath = Join-Path (Get-Location).Path "configure-azm.ps1"
+    $TempScriptPath = Join-Path (Get-Location).Path "New-MicroHackEnvironment.ps1"
     
     Write-DownloadLogToBlob "Downloading script from: $ScriptUrl"
     Write-DownloadLogToBlob "Temporary location: $TempScriptPath"
