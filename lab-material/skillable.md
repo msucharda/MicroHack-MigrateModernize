@@ -1006,7 +1006,7 @@ Choose how deep AppCAT should inspect the project.
 
 After the assessment completes, you'll see a success message in the GitHub Copilot chat summarizing what was accomplished:
 
-!IMAGE[assessment report](https://raw.githubusercontent.com/CZSK-MicroHacks/MicroHack-MigrateModernize/refs/heads/main/lab-material/media/02006.png)
+![assessment report](https://raw.githubusercontent.com/CZSK-MicroHacks/MicroHack-MigrateModernize/refs/heads/main/lab-material/media/02006.png)
 
 The assessment analyzed the Asset Manager application for cloud migration readiness and identified the following:
 
