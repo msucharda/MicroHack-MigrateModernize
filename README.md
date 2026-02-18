@@ -199,7 +199,7 @@ Transform raw discovery data into actionable insights by cleaning data, grouping
 ### Actions
 
 **Review Data Quality:**
-1. Navigate to your Azure Migrate project overview
+1. Navigate to already prepared (with suffix `-azm`) Azure Migrate project overview
 
 ![Azure Migrate project overview](https://raw.githubusercontent.com/CZSK-MicroHacks/MicroHack-MigrateModernize/refs/heads/main/lab-material/media/0095.png)
 
