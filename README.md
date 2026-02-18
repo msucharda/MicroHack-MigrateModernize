@@ -176,7 +176,7 @@ The lab environment provides:
 - Challenge 5: 45-60 minutes
 - Challenge 6: 45-60 minutes
 - Challenge 7: 60-90 minutes
-- **Total: 5.5-7.5 hours**
+- **Total: 5.25-7.5 hours**
 
 ---
 
@@ -874,7 +874,7 @@ Establish comprehensive monitoring and observability for your applications and p
 
 ---
 
-## Challenge 7 - End-to-End Deployment Automation (Pipeline Mindset)
+## Challenge 7 - End-to-End Deployment Automation
 
 ### Goal
 
@@ -1159,7 +1159,7 @@ Throughout this MicroHack, you've gained hands-on experience with the complete m
 - Azure App Service deployment
 - AppCAT assessment for Java applications
 - Automated validation and testing workflows
-- Infrastructure as Code (Bicep/Terraform)
+- Infrastructure as Code (IaC) with Bicep/Terraform
 - Multi-environment deployment strategies
 - Azure monitoring and observability
 - Application Insights and Log Analytics
