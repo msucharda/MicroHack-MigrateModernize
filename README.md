@@ -1098,7 +1098,7 @@ Throughout this MicroHack, you've gained hands-on experience with the complete m
 - Upgraded application from legacy .NET Framework to .NET 9
 - Migrated from Windows AD to Microsoft Entra ID authentication
 - Resolved cloud readiness issues identified in the upgrade report
-- Deployed the modernized application to Azure App Service
+- Deployed the modernized application to Azure Container Apps
 
 ### Challenge 4: Java Application Modernization
 
@@ -1114,7 +1114,7 @@ Throughout this MicroHack, you've gained hands-on experience with the complete m
 ### Challenge 5: Infrastructure as Code Deployment
 
 - Created Infrastructure as Code templates (Bicep or Terraform)
-- Defined Azure resources as code (App Service, SQL Database, Storage Account, Application Insights)
+- Defined Azure resources as code (Container Apps, SQL Database, Storage Account, Application Insights)
 - Parameterized infrastructure for multiple environments (dev, test, prod)
 - Implemented database schema deployment scripts
 - Created automated deployment scripts (PowerShell and Bash)
