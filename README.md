@@ -173,7 +173,10 @@ The lab environment provides:
 - Challenge 2: 30-45 minutes
 - Challenge 3: 45-60 minutes
 - Challenge 4: 60-75 minutes
-- **Total: 3-4 hours**
+- Challenge 5: 45-60 minutes
+- Challenge 6: 45-60 minutes
+- Challenge 7: 60-90 minutes
+- **Total: 5.5-7.5 hours**
 
 ---
 
@@ -598,6 +601,468 @@ Modernize the Asset Manager Java Spring Boot application for Azure deployment, m
 
 ---
 
+## Challenge 5 - Deploying Applications and Data with Code
+
+### Goal
+
+Build a repeatable Infrastructure as Code (IaC) deployment method that produces consistent results across multiple environments (dev/test/prod), reduces the risk of manual errors, and enables rapid adjustments to infrastructure and application configurations.
+
+### Actions
+
+**Setup Infrastructure as Code Repository:**
+
+1. Navigate to your forked repository in GitHub
+2. Create a new branch called `iac-deployment`
+3. Create a new directory structure for IaC: `infrastructure/bicep` or `infrastructure/terraform`
+
+**Define Azure Infrastructure:**
+
+4. Create a main infrastructure template file (e.g., `main.bicep` or `main.tf`)
+5. Define the following resources in your template:
+   - Resource Group
+   - App Service Plan
+   - App Service (for ContosoUniversity)
+   - Azure SQL Database
+   - Azure Storage Account (for AssetManager)
+   - Application Insights
+
+**Parameterize for Multiple Environments:**
+
+6. Create environment-specific parameter files:
+   - `parameters.dev.json`
+   - `parameters.test.json`
+   - `parameters.prod.json`
+7. Define environment-specific values:
+   - SKU/pricing tiers (lower for dev/test, production-grade for prod)
+   - Database sizing
+   - Naming conventions with environment prefix
+8. Create variables for common configurations
+9. Use secure parameter handling for sensitive values (connection strings, keys)
+
+**Add Database Schema Deployment:**
+
+10. Create a database migration script directory: `database/migrations`
+11. Add SQL scripts for schema creation and initial data
+12. Consider using tools like:
+    - Entity Framework migrations for .NET
+    - Flyway or Liquibase for Java applications
+13. Document the database deployment order in a `README.md`
+
+**Create Deployment Scripts:**
+
+14. Create PowerShell deployment script: `deploy.ps1`
+15. Add parameters for:
+    - Environment name (dev/test/prod)
+    - Azure subscription
+    - Resource location
+16. Include validation steps before deployment
+17. Add rollback capabilities for failed deployments
+18. Create Azure CLI alternative script: `deploy.sh` for cross-platform support
+
+**Implement Application Configuration Management:**
+
+19. Set up Azure App Configuration or Key Vault for runtime settings
+20. Define application settings that vary per environment:
+    - Database connection strings
+    - Azure Storage connection strings
+    - API endpoints
+    - Feature flags
+21. Use managed identities to access configuration securely
+
+**Test IaC Deployment:**
+
+22. Deploy to a test environment using your IaC scripts:
+    ```powershell
+    ./deploy.ps1 -Environment dev -Location eastus
+    ```
+23. Verify all resources are created correctly
+24. Check resource tags and naming conventions
+25. Validate application connectivity to database and storage
+
+**Deploy Application Code:**
+
+26. Create application deployment scripts
+27. Build application artifacts (publish .NET app, build Java JAR)
+28. Upload artifacts to Azure App Service using:
+    - Azure CLI: `az webapp deploy`
+    - PowerShell: `Publish-AzWebApp`
+29. Run database migrations as part of deployment
+30. Verify application starts successfully
+
+**Create Deployment Documentation:**
+
+31. Document the complete deployment process
+32. Include prerequisites (Azure CLI, PowerShell modules, permissions)
+33. Add troubleshooting section for common issues
+34. Create a deployment checklist
+
+### Success Criteria
+
+- ✅ Infrastructure as Code templates created (Bicep or Terraform)
+- ✅ Environment-specific parameter files for dev, test, and prod
+- ✅ All Azure resources defined as code (App Service, SQL, Storage, etc.)
+- ✅ Database schema deployment scripts created
+- ✅ Deployment automation scripts (PowerShell/Bash) functional
+- ✅ Successful deployment to at least one environment
+- ✅ Application configuration managed through Azure services (App Configuration/Key Vault)
+- ✅ Application code deploys successfully to provisioned infrastructure
+- ✅ All deployments are idempotent (can be run multiple times safely)
+- ✅ Comprehensive deployment documentation created
+
+### Learning Resources
+
+- [Azure Bicep Documentation](https://learn.microsoft.com/azure/azure-resource-manager/bicep/)
+- [Terraform on Azure](https://learn.microsoft.com/azure/developer/terraform/)
+- [Infrastructure as Code Best Practices](https://learn.microsoft.com/azure/architecture/framework/devops/iac)
+- [Azure App Configuration](https://learn.microsoft.com/azure/azure-app-configuration/overview)
+- [Azure Key Vault](https://learn.microsoft.com/azure/key-vault/general/overview)
+- [Entity Framework Migrations](https://learn.microsoft.com/ef/core/managing-schemas/migrations/)
+- [Azure CLI Deployment](https://learn.microsoft.com/cli/azure/webapp)
+
+---
+
+## Challenge 6 - Monitoring and Operational Excellence
+
+### Goal
+
+Establish comprehensive monitoring and observability for your applications and platform. Learn how to measure application "health", identify issues before users are impacted, evaluate the impact of changes, and quickly diagnose root causes. Configure automated alerts and set up Site Reliability Engineering (SRE) practices.
+
+### Actions
+
+**Enable Application Insights:**
+
+1. Navigate to your App Service in Azure Portal
+2. Enable Application Insights integration
+3. Note the instrumentation key and connection string
+4. Configure the ContosoUniversity application to use Application Insights:
+   - Add Application Insights SDK NuGet package
+   - Update `appsettings.json` with instrumentation key
+5. Configure the AssetManager application similarly for Java:
+   - Add Application Insights Java agent
+   - Update `application.properties`
+
+**Configure Custom Telemetry:**
+
+6. Implement custom events tracking:
+   - User registration events
+   - Course enrollment actions
+   - Asset upload operations
+7. Add custom metrics:
+   - Page load times
+   - API response times
+   - Database query durations
+8. Implement dependency tracking for:
+   - SQL Database calls
+   - Azure Blob Storage operations
+   - External API calls
+
+**Set Up Availability Monitoring:**
+
+9. Create availability tests (ping tests) for your applications:
+   - Test from multiple geographic locations
+   - Configure test frequency (every 5 minutes)
+   - Set up appropriate timeout values
+10. Create multi-step web tests for critical user flows:
+    - User login flow
+    - Course enrollment process
+    - Asset upload and retrieval
+
+**Configure Log Analytics:**
+
+11. Create a Log Analytics workspace
+12. Connect Application Insights to Log Analytics
+13. Enable diagnostic logging for:
+    - App Service logs (application, web server, deployment)
+    - SQL Database query performance logs
+    - Azure Storage analytics logs
+
+**Create Monitoring Dashboards:**
+
+14. Build an operational dashboard in Azure Portal with:
+    - Application response times (p50, p95, p99)
+    - Request rates and failure rates
+    - Database performance metrics (DTU/CPU usage)
+    - Storage operations and bandwidth
+15. Add custom KQL (Kusto Query Language) queries:
+    ```kusto
+    requests
+    | where timestamp > ago(1h)
+    | summarize count(), avg(duration) by bin(timestamp, 5m)
+    | render timechart
+    ```
+16. Create a business metrics dashboard showing:
+    - Active users
+    - Course enrollments
+    - Asset uploads
+
+**Set Up Alerts and Notifications:**
+
+17. Create alert rules for critical conditions:
+    - HTTP 5xx errors exceed threshold
+    - Response time p95 > 2 seconds
+    - Application availability < 99%
+    - Database DTU usage > 80%
+18. Configure action groups:
+    - Email notifications to operations team
+    - SMS for critical alerts
+    - Integration with Microsoft Teams or Slack
+19. Set up smart detection for anomalies:
+    - Failure rate anomalies
+    - Performance degradation
+    - Memory leak detection
+
+**Implement Distributed Tracing:**
+
+20. Enable distributed tracing across services
+21. Configure correlation IDs for request tracking
+22. Visualize end-to-end transaction flows in Application Insights
+23. Identify bottlenecks in service dependencies
+
+**Create Runbooks and Playbooks:**
+
+24. Document incident response procedures
+25. Create automated remediation runbooks:
+    - Auto-restart App Service on repeated failures
+    - Scale-out on high CPU/memory
+    - Database connection pool adjustment
+26. Set up Azure Automation accounts for runbook execution
+
+**Configure SRE Practices:**
+
+27. Define Service Level Objectives (SLOs):
+    - Availability target: 99.9% uptime
+    - Performance target: p95 response time < 1 second
+    - Error budget: 0.1% downtime per month
+28. Create Service Level Indicators (SLIs) dashboards
+29. Implement error budget tracking
+30. Set up burn rate alerts to prevent SLO violations
+
+**Test Monitoring and Alerting:**
+
+31. Simulate failures to test alert configurations:
+    - Stop App Service to trigger availability alerts
+    - Generate load to test performance alerts
+    - Introduce errors to test failure detection
+32. Verify alert notifications are received
+33. Test runbook execution for automated remediation
+34. Document the time-to-detect and time-to-resolve metrics
+
+### Success Criteria
+
+- ✅ Application Insights enabled and collecting telemetry
+- ✅ Custom events and metrics implemented in applications
+- ✅ Availability tests configured from multiple locations
+- ✅ Log Analytics workspace connected and collecting logs
+- ✅ Operational dashboards created showing key metrics
+- ✅ Alert rules configured for critical conditions
+- ✅ Action groups set up with appropriate notification channels
+- ✅ Distributed tracing enabled across services
+- ✅ Incident response runbooks documented
+- ✅ SLOs and SLIs defined and tracked
+- ✅ Monitoring system tested and validated through simulated failures
+
+### Learning Resources
+
+- [Application Insights Overview](https://learn.microsoft.com/azure/azure-monitor/app/app-insights-overview)
+- [Azure Monitor Documentation](https://learn.microsoft.com/azure/azure-monitor/)
+- [KQL Query Language](https://learn.microsoft.com/azure/data-explorer/kusto/query/)
+- [Azure Alerts](https://learn.microsoft.com/azure/azure-monitor/alerts/alerts-overview)
+- [Distributed Tracing](https://learn.microsoft.com/azure/azure-monitor/app/distributed-tracing)
+- [Site Reliability Engineering (SRE)](https://learn.microsoft.com/azure/site-reliability-engineering/)
+- [SLOs and Error Budgets](https://sre.google/workbook/implementing-slos/)
+- [Azure Automation Runbooks](https://learn.microsoft.com/azure/automation/automation-runbook-types)
+
+---
+
+## Challenge 7 - End-to-End Deployment Automation (Pipeline Mindset)
+
+### Goal
+
+Create a complete end-to-end deployment pipeline that connects all previous challenges into an automated, repeatable workflow. Implement continuous integration and continuous deployment (CI/CD) practices that enable teams to release changes safely, consistently, and with confidence—from code commit to production deployment.
+
+### Actions
+
+**Set Up GitHub Actions Workflow:**
+
+1. Navigate to your forked repository
+2. Create `.github/workflows` directory if it doesn't exist
+3. Create a new workflow file: `azure-deployment.yml`
+4. Define workflow triggers:
+   ```yaml
+   on:
+     push:
+       branches: [main, develop]
+     pull_request:
+       branches: [main]
+     workflow_dispatch:
+   ```
+
+**Implement Build Pipeline:**
+
+5. Create build jobs for both applications:
+   - .NET application build job:
+     - Restore dependencies
+     - Build solution
+     - Run unit tests
+     - Publish artifacts
+   - Java application build job:
+     - Maven dependency resolution
+     - Compile and package
+     - Run unit tests
+     - Create JAR artifact
+6. Configure build caching to speed up subsequent runs
+7. Add code quality checks:
+   - Run linters (dotnet format, checkstyle)
+   - Security scanning (dependency vulnerability checks)
+   - Code coverage reporting
+
+**Configure Infrastructure Deployment Stage:**
+
+8. Add infrastructure deployment job using your IaC from Challenge 5
+9. Implement environment-based deployment strategy:
+   - Dev environment: Auto-deploy on any commit to `develop` branch
+   - Test environment: Auto-deploy on any commit to `main` branch
+   - Prod environment: Manual approval required
+10. Use GitHub Environments to manage deployment protection:
+    - Create environments: Development, Testing, Production
+    - Add required reviewers for Production
+    - Configure environment secrets
+11. Add infrastructure validation steps:
+    - Bicep/Terraform linting
+    - What-if/plan execution before actual deployment
+    - Post-deployment resource verification
+
+**Implement Database Migration Pipeline:**
+
+12. Create a database migration job
+13. Add migration validation:
+    - Check for breaking changes
+    - Validate migration scripts syntax
+14. Execute migrations in order:
+    - Dev: Automatic migration
+    - Test: Automatic migration after infrastructure
+    - Prod: Manual approval + automated migration
+15. Implement rollback capability for failed migrations
+16. Store migration history and audit logs
+
+**Configure Application Deployment Stage:**
+
+17. Create application deployment jobs
+18. Deploy applications to App Service:
+    - Use deployment slots for production (blue-green deployment)
+    - Deploy to staging slot first
+    - Run smoke tests on staging
+    - Swap to production slot
+19. Configure deployment settings:
+    - App Service configuration
+    - Connection strings from Key Vault
+    - Application Insights instrumentation key
+20. Implement deployment health checks
+
+**Add Automated Testing Stages:**
+
+21. Implement post-deployment validation tests:
+    - Health check endpoints
+    - Basic functionality tests
+    - Integration tests
+22. Add performance testing:
+    - Load testing using Azure Load Testing or k6
+    - Performance regression detection
+23. Configure automated rollback on test failures
+
+**Implement Progressive Deployment:**
+
+24. Configure traffic splitting for canary deployments
+25. Start with 10% traffic to new version
+26. Monitor key metrics during canary phase:
+    - Error rates
+    - Response times
+    - Application Insights alerts
+27. Automatically promote or rollback based on metrics
+28. Implement feature flags for gradual feature rollout
+
+**Set Up Pipeline Monitoring:**
+
+29. Configure pipeline failure notifications:
+    - Email notifications for build failures
+    - Microsoft Teams/Slack integration
+    - GitHub mobile app notifications
+30. Create pipeline performance dashboard:
+    - Build duration trends
+    - Deployment frequency metrics
+    - Failure rates by environment
+31. Implement deployment success tracking
+32. Set up DORA metrics tracking:
+    - Deployment frequency
+    - Lead time for changes
+    - Mean time to recovery (MTTR)
+    - Change failure rate
+
+**Implement Security and Compliance:**
+
+33. Add security scanning stages:
+    - Static Application Security Testing (SAST)
+    - Dependency vulnerability scanning
+    - Container scanning if using containers
+34. Implement secret scanning to prevent credential leaks
+35. Add compliance checks:
+    - Policy validation (Azure Policy)
+    - Configuration compliance
+36. Create audit logs for all deployments
+
+**Configure Rollback and Recovery:**
+
+37. Implement automated rollback triggers:
+    - High error rate detected
+    - Availability drops below threshold
+    - Manual rollback capability
+38. Create rollback workflow:
+    - Revert to previous deployment slot
+    - Restore previous database version if needed
+    - Notify team of rollback
+39. Document rollback procedures
+
+**Create Pipeline Documentation:**
+
+40. Document the complete pipeline architecture
+41. Create a pipeline visualization diagram
+42. Write runbook for pipeline failures
+43. Document approval processes and responsibilities
+44. Create onboarding guide for new team members
+
+### Success Criteria
+
+- ✅ GitHub Actions workflows created for all applications
+- ✅ Build pipelines execute successfully with tests and quality checks
+- ✅ Infrastructure deployment automated via IaC templates
+- ✅ Database migrations integrated into deployment pipeline
+- ✅ Application deployment to Azure App Service automated
+- ✅ Multiple environments configured (Dev, Test, Prod) with appropriate gates
+- ✅ Blue-green or canary deployment strategy implemented
+- ✅ Automated testing stages validate deployments
+- ✅ Progressive deployment with traffic splitting configured
+- ✅ Pipeline monitoring and notifications active
+- ✅ Security scanning integrated into pipeline
+- ✅ Automated and manual rollback capabilities functional
+- ✅ Complete end-to-end deployment succeeds from commit to production
+- ✅ DORA metrics tracking implemented
+- ✅ Comprehensive pipeline documentation created
+
+### Learning Resources
+
+- [GitHub Actions Documentation](https://docs.github.com/actions)
+- [GitHub Actions for Azure](https://learn.microsoft.com/azure/developer/github/github-actions)
+- [Azure DevOps vs GitHub Actions](https://learn.microsoft.com/azure/developer/github/github-actions-vs-azure-devops)
+- [Deployment Slots in App Service](https://learn.microsoft.com/azure/app-service/deploy-staging-slots)
+- [Blue-Green Deployments](https://learn.microsoft.com/azure/architecture/example-scenario/blue-green-spring/blue-green-spring)
+- [Canary Deployments](https://learn.microsoft.com/azure/architecture/framework/devops/deployment-patterns)
+- [GitHub Environments](https://docs.github.com/actions/deployment/targeting-different-environments/using-environments-for-deployment)
+- [Azure Load Testing](https://learn.microsoft.com/azure/load-testing/overview-what-is-azure-load-testing)
+- [DORA Metrics](https://cloud.google.com/blog/products/devops-sre/using-the-four-keys-to-measure-your-devops-performance)
+- [CI/CD Best Practices](https://learn.microsoft.com/azure/architecture/framework/devops/checklist)
+
+---
+
 ## Finish
 
 Congratulations! You've completed the Azure Migration & Modernization MicroHack. 
@@ -644,6 +1109,44 @@ Throughout this MicroHack, you've gained hands-on experience with the complete m
 - Validated migration success through automated CVE, build, consistency, and test validation
 - Tested the modernized application locally
 
+### Challenge 5: Infrastructure as Code Deployment
+
+- Created Infrastructure as Code templates (Bicep or Terraform)
+- Defined Azure resources as code (App Service, SQL Database, Storage Account, Application Insights)
+- Parameterized infrastructure for multiple environments (dev, test, prod)
+- Implemented database schema deployment scripts
+- Created automated deployment scripts (PowerShell and Bash)
+- Configured Azure App Configuration or Key Vault for application settings
+- Successfully deployed infrastructure and applications to Azure
+- Established repeatable, consistent deployment process
+
+### Challenge 6: Monitoring and Operational Excellence
+
+- Enabled Application Insights for comprehensive telemetry collection
+- Implemented custom events, metrics, and distributed tracing
+- Configured availability tests from multiple geographic locations
+- Set up Log Analytics workspace and connected logging
+- Created operational dashboards with KQL queries
+- Configured alert rules and action groups for critical conditions
+- Documented incident response runbooks
+- Defined Service Level Objectives (SLOs) and Service Level Indicators (SLIs)
+- Tested monitoring system through simulated failures
+- Established SRE practices for operational excellence
+
+### Challenge 7: End-to-End Deployment Automation
+
+- Created GitHub Actions workflows for CI/CD pipeline
+- Implemented build pipelines with automated testing and quality checks
+- Automated infrastructure deployment with environment-specific gates
+- Integrated database migrations into deployment pipeline
+- Configured blue-green or canary deployment strategies
+- Set up multiple environments (Dev, Test, Production) with approval workflows
+- Implemented progressive deployment with traffic splitting
+- Added security scanning and compliance checks
+- Configured automated rollback capabilities
+- Established DORA metrics tracking for continuous improvement
+- Created end-to-end automated deployment from code commit to production
+
 ---
 
 **Skills Acquired:**
@@ -656,6 +1159,16 @@ Throughout this MicroHack, you've gained hands-on experience with the complete m
 - Azure App Service deployment
 - AppCAT assessment for Java applications
 - Automated validation and testing workflows
+- Infrastructure as Code (Bicep/Terraform)
+- Multi-environment deployment strategies
+- Azure monitoring and observability
+- Application Insights and Log Analytics
+- Alert configuration and incident response
+- SRE practices and SLO/SLI implementation
+- CI/CD pipeline development with GitHub Actions
+- Blue-green and canary deployment patterns
+- Automated testing and security scanning
+- DORA metrics and DevOps performance tracking
 
 **Key Takeaways:**
 
@@ -665,6 +1178,9 @@ This workshop demonstrated the complete migration lifecycle from discovery to de
 - **Platform Migration**: Successfully migrated dependencies (S3 to Blob Storage, Windows AD to Entra ID) alongside application code
 - **Validation at Every Step**: Automated testing ensures functionality is preserved throughout modernization
 - **Multiple Technology Stacks**: Experience with both .NET and Java modernization approaches
+- **Infrastructure as Code**: Repeatable, consistent deployments across environments reduce errors and enable rapid adjustments
+- **Operational Excellence**: Comprehensive monitoring and SRE practices ensure application health and quick incident response
+- **Automation Pipeline**: End-to-end CI/CD enables fast, safe, and confident releases with automated quality gates
 
 ---
 
