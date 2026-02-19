@@ -11,7 +11,7 @@ This MicroHack provides hands-on experience with the entire migration lifecycle 
 **Key Technologies:**
 - Azure Migrate for discovery and assessment
 - GitHub Copilot for AI-powered code modernization
-- Azure App Service for hosting modernized applications
+- Azure Container Apps for hosting modernized applications
 
 ## Environment creation
 
@@ -48,7 +48,7 @@ After completing this MicroHack you will:
 - Analyze migration readiness across servers, databases, and applications
 - Use GitHub Copilot to modernize .NET Framework applications to modern .NET
 - Leverage AI to migrate Java applications from AWS dependencies to Azure services
-- Deploy modernized applications to Azure App Service
+- Deploy modernized applications to Azure Container Apps
 
 ## MicroHack Challenges
 
@@ -108,9 +108,9 @@ If you don't have the required software installed locally, you can use **GitHub 
    - Open the GitHub Copilot App Modernization extension from the Activity Bar
    - Use the following example prompt in the Copilot Chat:
      ```
-     Find the ASP.NET application in this repository and modernize it to .NET 9.
+     Find the ASP.NET application in this repository and modernize it to .NET 10.
      Upgrade the framework, migrate authentication from Windows AD to Microsoft Entra ID,
-     and prepare it for Azure App Service deployment.
+     and prepare it for Azure Container Apps deployment.
      ```
    - The agent will analyze the application, create a migration plan, and execute the modernization autonomously
    
@@ -173,7 +173,10 @@ The lab environment provides:
 - Challenge 2: 30-45 minutes
 - Challenge 3: 45-60 minutes
 - Challenge 4: 60-75 minutes
-- **Total: 3-4 hours**
+- Challenge 5: 45-60 minutes
+- Challenge 6: 45-60 minutes
+- Challenge 7: 60-90 minutes
+- **Total: 5.25-7.5 hours**
 
 ---
 
@@ -346,7 +349,7 @@ Transform raw discovery data into actionable insights by cleaning data, grouping
 
 25. Review recommended migration paths (PaaS preferred)
 26. Analyze monthly costs by migration approach
-27. Review Web Apps to App Service assessment details
+27. Review Web Apps to Azure Container Apps assessment details
 28. Identify "Ready with conditions" applications
 29. Review ContosoUniversity application details
 30. Check server operating system support status
@@ -397,7 +400,7 @@ Transform raw discovery data into actionable insights by cleaning data, grouping
 
 ### Goal
 
-Modernize the Contoso University .NET Framework application to .NET 9 and deploy it to Azure App Service using GitHub Copilot's AI-powered code transformation capabilities.
+Modernize the Contoso University .NET Framework application to .NET 10 and deploy it to Azure Container Apps using GitHub Copilot's AI-powered code transformation capabilities.
 
 > **💡 Tip**: If you don't have Visual Studio 2022 installed locally, you can complete this challenge using **GitHub Codespaces**. See the [Alternative: Use GitHub Codespaces](#alternative-use-github-codespaces) section in the prerequisites for setup instructions.
 
@@ -423,7 +426,7 @@ Modernize the Contoso University .NET Framework application to .NET 9 and deploy
 
 ![Application running in IIS Express](https://raw.githubusercontent.com/CZSK-MicroHacks/MicroHack-MigrateModernize/refs/heads/main/lab-material/media/0030.png)
 
-**Assess and Upgrade to .NET 9:**
+**Assess and Upgrade to .NET 10:**
 
 8. Right-click the ContosoUniversity project and select "Modernize"
 
@@ -456,26 +459,26 @@ Modernize the Contoso University .NET Framework application to .NET 9 and deploy
 
 **Deploy to Azure:**
 
-25. Allow GitHub Copilot to complete the Azure App Service deployment
+25. Allow GitHub Copilot to complete the Azure Container Apps deployment
 26. Verify the deployment succeeds
 27. Test the deployed application in Azure
 
 ### Success Criteria
 
 - ✅ ContosoUniversity solution cloned and builds successfully
-- ✅ Application upgraded from .NET Framework to .NET 9
+- ✅ Application upgraded from .NET Framework to .NET 10
 - ✅ Upgrade report generated showing all changes and issues
 - ✅ Authentication migrated from Windows AD to Microsoft Entra ID
 - ✅ All mandatory cloud readiness issues resolved
-- ✅ Application successfully deployed to Azure App Service
+- ✅ Application successfully deployed to Azure Container Apps
 - ✅ Deployed application is accessible and functional
 
 ### Learning Resources
 
 - [GitHub Copilot for Visual Studio](https://learn.microsoft.com/visualstudio/ide/visual-studio-github-copilot-extension)
 - [Modernize .NET Applications](https://learn.microsoft.com/dotnet/architecture/modernize-with-azure-containers/)
-- [Migrate to .NET 9](https://learn.microsoft.com/dotnet/core/migration/)
-- [Azure App Service for .NET](https://learn.microsoft.com/azure/app-service/quickstart-dotnetcore)
+- [Migrate to .NET 10](https://learn.microsoft.com/dotnet/core/migration/)
+- [Azure Container Apps for .NET](https://learn.microsoft.com/azure/container-apps/quickstart-code-to-cloud)
 - [Microsoft Entra ID Authentication](https://learn.microsoft.com/azure/active-directory/develop/quickstart-v2-aspnet-core-webapp)
 
 ---
@@ -598,6 +601,524 @@ Modernize the Asset Manager Java Spring Boot application for Azure deployment, m
 
 ---
 
+## Challenge 5 - Deploying Applications and Data with Code
+
+### Goal
+
+Build a repeatable Infrastructure as Code (IaC) deployment method that produces consistent results across multiple environments (dev/test/prod), reduces the risk of manual errors, and enables rapid adjustments to infrastructure and application configurations.
+
+### Actions
+
+**Use GitHub Copilot for IaC Development:**
+
+> **💡 Pro Tip**: Use GitHub Copilot Chat to accelerate your Infrastructure as Code development throughout this challenge. Copilot can help generate Bicep/Terraform templates, deployment scripts, and configuration files.
+
+**Setup Infrastructure as Code Repository:**
+
+1. Navigate to your forked repository in GitHub
+2. Create a new branch called `iac-deployment`
+3. Create a new directory structure for IaC: `infrastructure/bicep` or `infrastructure/terraform`
+
+**Define Azure Infrastructure with GitHub Copilot:**
+
+4. Open GitHub Copilot Chat in your IDE (VS Code or Visual Studio)
+5. Use the following prompt to generate infrastructure templates:
+   ```
+   Generate a Bicep template for Azure Container Apps infrastructure including:
+   - Log Analytics Workspace
+   - Application Insights
+   - Azure Container Registry
+   - Container Apps Environment (depends on Log Analytics)
+   - Azure SQL Database
+   - Azure Storage Account
+   - Container App for a .NET application
+   
+   Include parameters for environment name, location, and resource names.
+   ```
+6. Review and customize the generated template for your needs
+7. Ask Copilot to explain any sections you don't understand:
+   ```
+   Explain the Container Apps Environment configuration and its dependencies
+   ```
+
+**Parameterize for Multiple Environments:**
+
+8. Create environment-specific parameter files using GitHub Copilot:
+   ```
+   Create parameter files for dev, test, and prod environments with appropriate SKU sizes:
+   - Dev: Basic/Free tiers where possible
+   - Test: Standard tiers
+   - Prod: Premium tiers with high availability
+   
+   Include parameters for:
+   - Database sizing (DTU or vCores)
+   - Container Apps scaling configuration
+   - Storage redundancy levels
+   ```
+9. Review the generated parameter files and adjust values as needed
+10. Use GitHub Copilot to generate deployment scripts:
+    ```
+    Create a PowerShell script that deploys Bicep templates with parameter files.
+    Include error handling, resource validation, and rollback capabilities.
+    ```
+
+**Add Database Schema Deployment:**
+
+11. Use GitHub Copilot to generate database migration scripts:
+    ```
+    Create SQL migration scripts for the ContosoUniversity database schema.
+    Include scripts for:
+    - Creating tables (Students, Courses, Enrollments)
+    - Adding indexes and constraints
+    - Seeding initial data
+    ```
+12. Generate a deployment order script:
+    ```
+    Create a PowerShell script that runs SQL migrations in the correct order
+    with transaction support and rollback capabilities.
+    ```
+
+**Create Deployment Scripts with GitHub Copilot:**
+
+13. Ask GitHub Copilot to create deployment automation:
+    ```
+    Create a comprehensive PowerShell deployment script (deploy.ps1) that:
+    - Validates Azure CLI installation and authentication
+    - Accepts parameters for environment (dev/test/prod), subscription, and location
+    - Deploys Bicep templates with appropriate parameter files
+    - Waits for deployment completion with progress feedback
+    - Validates all resources were created successfully
+    - Includes detailed error handling and logging
+    ```
+14. Review and test the generated script
+15. Ask Copilot to create a cross-platform Bash version:
+    ```
+    Convert the deploy.ps1 script to a Bash script (deploy.sh) for Linux/macOS users
+    ```
+
+**Implement Application Configuration Management:**
+
+16. Use GitHub Copilot to set up configuration management:
+    ```
+    Show me how to configure Azure Key Vault for storing application secrets and
+    how to reference these secrets in Azure Container Apps using managed identities.
+    Include Bicep code for:
+    - Creating Key Vault
+    - Storing connection strings as secrets
+    - Configuring Container App to access secrets via managed identity
+    ```
+17. Review and implement the generated configuration code
+
+**Test IaC Deployment:**
+
+18. Deploy to a test environment using your generated scripts:
+    ```powershell
+    ./deploy.ps1 -Environment dev -Location eastus
+    ```
+19. Verify all resources are created correctly
+20. Check resource tags and naming conventions
+21. Validate application connectivity to database and storage
+
+**Deploy Application Code:**
+
+22. Use GitHub Copilot to create container deployment scripts:
+    ```
+    Create a script that:
+    1. Builds a Docker image from the .NET application
+    2. Pushes the image to Azure Container Registry
+    3. Deploys the image to Azure Container Apps
+    4. Runs database migrations
+    5. Verifies the application is running
+    ```
+23. Execute the deployment and verify the application starts successfully
+
+**Create Deployment Documentation:**
+
+24. Ask GitHub Copilot to generate comprehensive documentation:
+    ```
+    Create a detailed README.md for the infrastructure deployment that includes:
+    - Prerequisites and required tools
+    - Step-by-step deployment instructions
+    - Environment-specific configurations
+    - Troubleshooting guide for common issues
+    - Architecture diagram description
+    ```
+25. Review and enhance the generated documentation
+
+### Success Criteria
+
+- ✅ Infrastructure as Code templates created (Bicep or Terraform)
+- ✅ Environment-specific parameter files for dev, test, and prod
+- ✅ All Azure resources defined as code (Container Apps, Container Registry, SQL, Storage, etc.)
+- ✅ Database schema deployment scripts created
+- ✅ Deployment automation scripts (PowerShell/Bash) functional
+- ✅ Successful deployment to at least one environment
+- ✅ Application configuration managed through Azure services (App Configuration/Key Vault)
+- ✅ Container images built and pushed to Azure Container Registry
+- ✅ Application deploys successfully to Container Apps from ACR
+- ✅ All deployments are idempotent (can be run multiple times safely)
+- ✅ Comprehensive deployment documentation created
+
+### Learning Resources
+
+- [Azure Bicep Documentation](https://learn.microsoft.com/azure/azure-resource-manager/bicep/)
+- [Terraform on Azure](https://learn.microsoft.com/azure/developer/terraform/)
+- [Infrastructure as Code Best Practices](https://learn.microsoft.com/azure/architecture/framework/devops/iac)
+- [Azure Container Apps](https://learn.microsoft.com/azure/container-apps/overview)
+- [Azure Container Registry](https://learn.microsoft.com/azure/container-registry/container-registry-intro)
+- [Azure App Configuration](https://learn.microsoft.com/azure/azure-app-configuration/overview)
+- [Azure Key Vault](https://learn.microsoft.com/azure/key-vault/general/overview)
+- [Entity Framework Migrations](https://learn.microsoft.com/ef/core/managing-schemas/migrations/)
+- [Deploy to Container Apps](https://learn.microsoft.com/azure/container-apps/quickstart-code-to-cloud)
+
+---
+
+## Challenge 6 - Monitoring and Operational Excellence
+
+### Goal
+
+Establish comprehensive monitoring and observability for your applications and platform. Learn how to measure application "health", identify issues before users are impacted, evaluate the impact of changes, and quickly diagnose root causes. Configure automated alerts and set up Site Reliability Engineering (SRE) practices.
+
+### Actions
+
+**Use GitHub Copilot for Monitoring Setup:**
+
+> **💡 Pro Tip**: GitHub Copilot can help you configure monitoring, generate KQL queries, create alert rules, and build monitoring dashboards throughout this challenge.
+
+**Enable Application Insights with GitHub Copilot:**
+
+1. Open GitHub Copilot Chat and ask:
+   ```
+   How do I configure Application Insights in a .NET 10 application deployed to Azure Container Apps?
+   Show me the code for appsettings.json and the necessary NuGet packages.
+   ```
+2. Review and implement the Application Insights configuration
+3. For Java applications, ask:
+   ```
+   Configure Application Insights Java agent for a Spring Boot application.
+   Show me the application.properties configuration.
+   ```
+4. Deploy the updated applications with monitoring enabled
+
+**Configure Custom Telemetry with Copilot:**
+
+5. Ask GitHub Copilot to generate custom telemetry code:
+   ```
+   Create custom Application Insights tracking for:
+   - User registration events with user properties
+   - Course enrollment actions with course and user data
+   - Asset upload operations with file metadata
+   
+   Show me the C# code using Application Insights SDK.
+   ```
+6. Implement the generated telemetry code in your applications
+7. For custom metrics, ask:
+   ```
+   Show me how to track custom metrics in Application Insights:
+   - Page load times
+   - API response times
+   - Database query durations
+   ```
+
+**Set Up Availability Monitoring:**
+
+8. Configure availability tests through Azure Portal or ask Copilot:
+   ```
+   Create an availability test configuration for Azure Container Apps monitoring.
+   Include multi-region testing and alert configuration.
+   ```
+
+**Create Monitoring Dashboards with GitHub Copilot:**
+
+9. Ask GitHub Copilot to generate KQL queries for your dashboards:
+   ```
+   Create KQL queries for Application Insights that show:
+   1. Application response times (p50, p95, p99) over the last 24 hours
+   2. Request rates and failure rates by endpoint
+   3. Top 10 slowest requests
+   4. Error rate trends with annotations
+   5. Custom event tracking for business metrics (enrollments, uploads)
+   ```
+10. Copy the generated queries and create dashboard tiles in Azure Portal
+11. Ask for more complex queries:
+    ```
+    Create a KQL query that correlates failed requests with their dependencies
+    (database, storage) to identify root causes of failures.
+    ```
+
+**Set Up Alerts with GitHub Copilot:**
+
+12. Generate alert rule configurations:
+    ```
+    Create Azure Monitor alert rules in Bicep/Terraform for:
+    - HTTP 5xx errors exceeding 5% of requests
+    - Response time p95 > 2 seconds for 5 minutes
+    - Application availability < 99%
+    - Container App replica failures
+    - Database DTU/CPU usage > 80%
+    
+    Include action groups with email and Teams notifications.
+    ```
+13. Deploy the alert configurations
+    - Integration with Microsoft Teams or Slack
+19. Set up smart detection for anomalies:
+    - Failure rate anomalies
+    - Performance degradation
+    - Memory leak detection
+
+**Create Runbooks with GitHub Copilot:**
+
+14. Ask GitHub Copilot to generate automated remediation scripts:
+    ```
+    Create a PowerShell runbook for Azure Automation that:
+    1. Monitors Container App health status
+    2. Automatically restarts the Container App if it fails health checks
+    3. Scales out replicas if CPU/memory usage exceeds thresholds
+    4. Sends notifications to Teams channel
+    5. Logs all actions for audit trail
+    ```
+15. Review and deploy the runbook to Azure Automation
+
+**Configure SRE Practices with Copilot:**
+
+16. Generate SLO/SLI tracking queries:
+    ```
+    Create KQL queries to track Service Level Indicators:
+    - Availability SLI: percentage of successful requests (non-5xx)
+    - Latency SLI: p95 response time
+    - Error budget calculation and burn rate
+    
+    Include queries for alerting when error budget is at risk.
+    ```
+17. Create dashboards to visualize SLOs and error budgets
+18. Set up proactive alerts based on burn rate
+
+**Test Monitoring System:**
+
+19. Use GitHub Copilot to create test scripts:
+    ```
+    Create a load testing script using k6 or Apache JMeter that:
+    - Simulates normal user traffic
+    - Gradually increases load to trigger performance alerts
+    - Introduces errors to test failure detection
+    - Validates alert notifications are sent
+    ```
+20. Execute tests and verify monitoring and alerting work as expected
+
+### Success Criteria
+
+- ✅ Application Insights enabled and collecting telemetry
+- ✅ Custom events and metrics implemented in applications
+- ✅ Availability tests configured from multiple locations
+- ✅ Log Analytics workspace connected and collecting logs
+- ✅ Operational dashboards created showing key metrics
+- ✅ Alert rules configured for critical conditions
+- ✅ Action groups set up with appropriate notification channels
+- ✅ Distributed tracing enabled across services
+- ✅ Incident response runbooks documented
+- ✅ SLOs and SLIs defined and tracked
+- ✅ Monitoring system tested and validated through simulated failures
+
+### Learning Resources
+
+- [Application Insights Overview](https://learn.microsoft.com/azure/azure-monitor/app/app-insights-overview)
+- [Azure Monitor Documentation](https://learn.microsoft.com/azure/azure-monitor/)
+- [KQL Query Language](https://learn.microsoft.com/azure/data-explorer/kusto/query/)
+- [Azure Alerts](https://learn.microsoft.com/azure/azure-monitor/alerts/alerts-overview)
+- [Distributed Tracing](https://learn.microsoft.com/azure/azure-monitor/app/distributed-tracing)
+- [Site Reliability Engineering (SRE)](https://learn.microsoft.com/azure/site-reliability-engineering/)
+- [SLOs and Error Budgets](https://sre.google/workbook/implementing-slos/)
+- [Azure Automation Runbooks](https://learn.microsoft.com/azure/automation/automation-runbook-types)
+
+---
+
+## Challenge 7 - End-to-End Deployment Automation
+
+### Goal
+
+Create a complete end-to-end deployment pipeline that connects all previous challenges into an automated, repeatable workflow. Implement continuous integration and continuous deployment (CI/CD) practices that enable teams to release changes safely, consistently, and with confidence—from code commit to production deployment.
+
+### Actions
+
+**Use GitHub Copilot for CI/CD Pipeline Development:**
+
+> **💡 Pro Tip**: GitHub Copilot can generate complete GitHub Actions workflows, deployment scripts, and help you implement advanced CI/CD patterns throughout this challenge.
+
+**Set Up GitHub Actions Workflow with Copilot:**
+
+1. Navigate to your forked repository
+2. Create `.github/workflows` directory if it doesn't exist
+3. Open GitHub Copilot Chat and ask:
+   ```
+   Create a GitHub Actions workflow for deploying a .NET 10 application to Azure Container Apps.
+   Include:
+   - Triggers for push to main/develop branches and pull requests
+   - Build and test jobs for .NET application
+   - Docker image build and push to Azure Container Registry
+   - Deployment to Container Apps with environment separation (dev/test/prod)
+   - Manual approval gate for production
+   ```
+4. Review and save the generated workflow as `azure-deployment.yml`
+
+**Implement Build Pipeline with Copilot:**
+
+5. Ask GitHub Copilot to enhance the build pipeline:
+   ```
+   Add to the GitHub Actions workflow:
+   - Dependency caching for faster builds
+   - Code quality checks (linting with dotnet format)
+   - Security scanning (Dependabot, CodeQL)
+   - Code coverage reporting with threshold enforcement
+   - Artifact upload for build outputs
+   ```
+6. For Java applications, ask:
+   ```
+   Create a GitHub Actions job for building a Java Spring Boot application:
+   - Maven build with dependency caching
+   - Unit test execution with JaCoCo coverage
+   - Security scanning with OWASP dependency check
+   - JAR artifact creation and upload
+   ```
+
+**Configure Infrastructure Deployment with Copilot:**
+
+7. Ask GitHub Copilot to create infrastructure deployment jobs:
+   ```
+   Add a GitHub Actions job that:
+   - Deploys Bicep templates from Challenge 5
+   - Uses environment-specific parameter files
+   - Implements environment-based deployment:
+     * Dev: Auto-deploy on develop branch
+     * Test: Auto-deploy on main branch  
+     * Prod: Requires manual approval
+   - Validates deployment using Azure CLI
+   - Includes rollback on failure
+   ```
+8. Set up GitHub Environments with protection rules
+9. Configure environment secrets for Azure credentials
+
+**Implement Database Migration Pipeline:**
+
+10. Generate database migration automation:
+    ```
+    Create a GitHub Actions job for database migrations that:
+    - Validates SQL script syntax
+    - Checks for breaking schema changes
+    - Runs migrations with Entity Framework or SQL scripts
+    - Implements automatic rollback on failures
+    - Logs all migration activities
+    ```
+
+**Configure Application Deployment with Copilot:**
+
+11. Ask GitHub Copilot to create container deployment automation:
+    ```
+    Create a GitHub Actions job that:
+    - Builds Docker image for .NET 10 application
+    - Pushes image to Azure Container Registry with version tags
+    - Deploys new revision to Azure Container Apps
+    - Implements blue-green deployment with traffic splitting
+    - Runs smoke tests on new revision before full rollout
+    - Configures environment variables from Key Vault
+    - Includes automatic rollback on health check failures
+    ```
+12. Review and implement the generated deployment workflow
+
+**Add Automated Testing with Copilot:**
+
+13. Generate comprehensive test automation:
+    ```
+    Create GitHub Actions jobs for post-deployment testing:
+    - Health check validation (HTTP 200 responses)
+    - Integration tests for key user flows
+    - Performance tests using k6 or Azure Load Testing
+    - Automated rollback trigger on test failures
+    - Test result reporting and notifications
+    ```
+
+**Implement Progressive Deployment:**
+
+14. Ask Copilot for canary deployment strategy:
+    ```
+    Create a GitHub Actions workflow that implements canary deployment:
+    - Deploy new revision with 10% traffic split
+    - Monitor Application Insights metrics for 10 minutes
+    - Automatically promote to 50% if metrics are healthy
+    - Gradually increase to 100% if no issues detected
+    - Automatic rollback if error rate > threshold
+    ```
+
+**Set Up Pipeline Monitoring:**
+
+15. Generate DORA metrics tracking:
+    ```
+    Create a script that tracks DORA metrics from GitHub Actions:
+    - Deployment frequency (commits to production per day)
+    - Lead time (commit to deployment time)
+    - Mean time to recovery (incident to resolution time)
+    - Change failure rate (deployments causing incidents)
+    
+    Export metrics to Azure Monitor or create GitHub Actions dashboard.
+    ```
+
+**Implement Security and Compliance:**
+
+16. Use GitHub Copilot to add security scanning:
+    ```
+    Add to the GitHub Actions workflow:
+    - CodeQL analysis for static application security testing
+    - Trivy or Grype for container image vulnerability scanning
+    - Dependabot alerts integration
+    - Secret scanning to prevent credential leaks
+    - Azure Policy compliance validation
+    ```
+
+**Create Pipeline Documentation:**
+
+17. Ask GitHub Copilot to generate comprehensive documentation:
+    ```
+    Create a complete CI/CD pipeline documentation that includes:
+    - Architecture diagram in Mermaid format
+    - Step-by-step workflow explanation
+    - Environment configuration guide
+    - Rollback procedures
+    - Troubleshooting guide for common pipeline failures
+    - Team responsibilities and approval processes
+    ```
+
+### Success Criteria
+
+- ✅ GitHub Actions workflows created for all applications
+- ✅ Build pipelines execute successfully with tests and quality checks
+- ✅ Infrastructure deployment automated via IaC templates
+- ✅ Database migrations integrated into deployment pipeline
+- ✅ Application deployment to Azure Container Apps automated
+- ✅ Multiple environments configured (Dev, Test, Prod) with appropriate gates
+- ✅ Blue-green or canary deployment strategy implemented
+- ✅ Automated testing stages validate deployments
+- ✅ Progressive deployment with traffic splitting configured
+- ✅ Pipeline monitoring and notifications active
+- ✅ Security scanning integrated into pipeline
+- ✅ Automated and manual rollback capabilities functional
+- ✅ Complete end-to-end deployment succeeds from commit to production
+- ✅ DORA metrics tracking implemented
+- ✅ Comprehensive pipeline documentation created
+
+### Learning Resources
+
+- [GitHub Actions Documentation](https://docs.github.com/actions)
+- [GitHub Actions for Azure](https://learn.microsoft.com/azure/developer/github/github-actions)
+- [Azure DevOps vs GitHub Actions](https://learn.microsoft.com/azure/developer/github/github-actions-vs-azure-devops)
+- [Azure Container Apps Revisions](https://learn.microsoft.com/azure/container-apps/revisions)
+- [Blue-Green Deployments with Container Apps](https://learn.microsoft.com/azure/container-apps/blue-green-deployment)
+- [Canary Deployments](https://learn.microsoft.com/azure/architecture/framework/devops/deployment-patterns)
+- [GitHub Environments](https://docs.github.com/actions/deployment/targeting-different-environments/using-environments-for-deployment)
+- [Azure Load Testing](https://learn.microsoft.com/azure/load-testing/overview-what-is-azure-load-testing)
+- [DORA Metrics](https://cloud.google.com/blog/products/devops-sre/using-the-four-keys-to-measure-your-devops-performance)
+- [CI/CD Best Practices](https://learn.microsoft.com/azure/architecture/framework/devops/checklist)
+
+---
+
 ## Finish
 
 Congratulations! You've completed the Azure Migration & Modernization MicroHack. 
@@ -628,10 +1149,10 @@ Throughout this MicroHack, you've gained hands-on experience with the complete m
 - Cloned and configured the Contoso University .NET application repository
 - Used GitHub Copilot App Modernization extension in Visual Studio
 - Performed comprehensive code assessment for cloud readiness
-- Upgraded application from legacy .NET Framework to .NET 9
+- Upgraded application from legacy .NET Framework to .NET 10
 - Migrated from Windows AD to Microsoft Entra ID authentication
 - Resolved cloud readiness issues identified in the upgrade report
-- Deployed the modernized application to Azure App Service
+- Deployed the modernized application to Azure Container Apps
 
 ### Challenge 4: Java Application Modernization
 
@@ -644,6 +1165,45 @@ Throughout this MicroHack, you've gained hands-on experience with the complete m
 - Validated migration success through automated CVE, build, consistency, and test validation
 - Tested the modernized application locally
 
+### Challenge 5: Infrastructure as Code Deployment
+
+- Created Infrastructure as Code templates (Bicep or Terraform)
+- Defined Azure resources as code (Container Apps, Container Registry, SQL Database, Storage Account, Application Insights)
+- Parameterized infrastructure for multiple environments (dev, test, prod)
+- Implemented database schema deployment scripts
+- Created automated deployment scripts (PowerShell and Bash)
+- Built and pushed container images to Azure Container Registry
+- Configured Azure App Configuration or Key Vault for application settings
+- Successfully deployed infrastructure and applications to Azure
+- Established repeatable, consistent deployment process
+
+### Challenge 6: Monitoring and Operational Excellence
+
+- Enabled Application Insights for comprehensive telemetry collection
+- Implemented custom events, metrics, and distributed tracing
+- Configured availability tests from multiple geographic locations
+- Set up Log Analytics workspace and connected logging
+- Created operational dashboards with KQL queries
+- Configured alert rules and action groups for critical conditions
+- Documented incident response runbooks
+- Defined Service Level Objectives (SLOs) and Service Level Indicators (SLIs)
+- Tested monitoring system through simulated failures
+- Established SRE practices for operational excellence
+
+### Challenge 7: End-to-End Deployment Automation
+
+- Created GitHub Actions workflows for CI/CD pipeline
+- Implemented build pipelines with automated testing and quality checks
+- Automated infrastructure deployment with environment-specific gates
+- Integrated database migrations into deployment pipeline
+- Configured blue-green or canary deployment strategies
+- Set up multiple environments (Dev, Test, Production) with approval workflows
+- Implemented progressive deployment with traffic splitting
+- Added security scanning and compliance checks
+- Configured automated rollback capabilities
+- Established DORA metrics tracking for continuous improvement
+- Created end-to-end automated deployment from code commit to production
+
 ---
 
 **Skills Acquired:**
@@ -653,9 +1213,19 @@ Throughout this MicroHack, you've gained hands-on experience with the complete m
 - AI-powered code modernization with GitHub Copilot
 - Migration strategy selection (Rehost, Replatform, Refactor)
 - Cloud readiness assessment and remediation
-- Azure App Service deployment
+- Azure Container Apps deployment
 - AppCAT assessment for Java applications
 - Automated validation and testing workflows
+- Infrastructure as Code (IaC) with Bicep/Terraform
+- Multi-environment deployment strategies
+- Azure monitoring and observability
+- Application Insights and Log Analytics
+- Alert configuration and incident response
+- SRE practices and SLO/SLI implementation
+- CI/CD pipeline development with GitHub Actions
+- Blue-green and canary deployment patterns
+- Automated testing and security scanning
+- DORA metrics and DevOps performance tracking
 
 **Key Takeaways:**
 
@@ -665,6 +1235,9 @@ This workshop demonstrated the complete migration lifecycle from discovery to de
 - **Platform Migration**: Successfully migrated dependencies (S3 to Blob Storage, Windows AD to Entra ID) alongside application code
 - **Validation at Every Step**: Automated testing ensures functionality is preserved throughout modernization
 - **Multiple Technology Stacks**: Experience with both .NET and Java modernization approaches
+- **Infrastructure as Code**: Repeatable, consistent deployments across environments reduce errors and enable rapid adjustments
+- **Operational Excellence**: Comprehensive monitoring and SRE practices ensure application health and quick incident response
+- **Automation Pipeline**: End-to-end CI/CD enables fast, safe, and confident releases with automated quality gates
 
 ---
 
