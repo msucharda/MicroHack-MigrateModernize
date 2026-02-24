@@ -72,20 +72,20 @@ public abstract class AbstractFileProcessingService implements FileProcessor {
                 if (tempDir != null) {
                     Files.deleteIfExists(tempDir);
                 }
+                if (context != null) {
+                    if (processingSuccess) {
+                        // Acknowledge the message if processing was successful
+                        context.complete();
+                        log.debug("Message acknowledged for: {}", message.getKey());
+                    } else {
+                        // Reject the message with requeue=false to trigger dead letter exchange
+                        // This will route the message to the retry queue with delay
+                        context.abandon();
+                        log.debug("Message rejected and sent to dead letter exchange for delayed retry: {}", message.getKey());
+                    }
+                }
             } catch (IOException e) {
                 log.error("Error handling acknowledgment for: {}", message.getKey(), e);
-            }
-            if (context != null) {
-                if (processingSuccess) {
-                    // Acknowledge the message if processing was successful
-                    context.complete();
-                    log.debug("Message acknowledged for: {}", message.getKey());
-                } else {
-                    // Reject the message with requeue=false to trigger dead letter exchange
-                    // This will route the message to the retry queue with delay
-                    context.abandon();
-                    log.debug("Message rejected and sent to dead letter exchange for delayed retry: {}", message.getKey());
-                }
             }
         }
     }
