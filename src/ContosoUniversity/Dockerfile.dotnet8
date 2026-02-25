@@ -1,0 +1,57 @@
+# Alternative Dockerfile for ContosoUniversity - .NET 8 Migration Path
+# Note: This Dockerfile is for when ContosoUniversity is migrated from .NET Framework 4.8 to .NET 8
+# The current .NET Framework 4.8 version requires Windows containers (see Dockerfile)
+
+# Stage 1: Build the application
+FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
+
+WORKDIR /app
+
+# Copy project files
+COPY *.csproj .
+COPY *.sln .
+
+# Restore NuGet packages
+RUN dotnet restore
+
+# Copy source code
+COPY . .
+
+# Build the application
+RUN dotnet publish -c Release -o /app/publish
+
+# Stage 2: Create the runtime image
+FROM mcr.microsoft.com/dotnet/aspnet:8.0
+
+# Create a non-root user
+RUN groupadd -r appuser && useradd -r -g appuser appuser
+
+WORKDIR /app
+
+# Copy published application from build stage
+COPY --from=build /app/publish .
+
+# Change ownership to non-root user
+RUN chown -R appuser:appuser /app
+
+# Switch to non-root user
+USER appuser
+
+# Expose HTTP port
+EXPOSE 8080
+
+# Health check
+HEALTHCHECK --interval=30s --timeout=3s --start-period=60s --retries=3 \
+  CMD curl -f http://localhost:8080/health || exit 1
+
+# Set ASP.NET Core environment
+ENV ASPNETCORE_URLS=http://+:8080
+
+# Run the application
+ENTRYPOINT ["dotnet", "ContosoUniversity.dll"]
+
+# Configuration notes:
+# - Connection strings should be provided via environment variables:
+#   ConnectionStrings__DefaultConnection="Server=...;Database=...;User Id=...;Password=..."
+# - For Azure SQL with Managed Identity:
+#   ConnectionStrings__DefaultConnection="Server=...;Database=...;Authentication=Active Directory Managed Identity"
