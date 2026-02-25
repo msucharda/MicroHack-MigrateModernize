@@ -9,12 +9,20 @@ import com.azure.spring.cloud.autoconfigure.implementation.servicebus.properties
 import com.azure.spring.messaging.ConsumerIdentifier;
 import com.azure.spring.messaging.PropertiesSupplier;
 import com.azure.spring.messaging.servicebus.core.properties.ProcessorProperties;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
-public class RabbitConfig {
-    public static final String IMAGE_PROCESSING_QUEUE = "image-processing";
+public class ServiceBusConfig {
+
+    /** Queue name — set via SERVICE_BUS_QUEUE_NAME env var, defaults to "image-processing" */
+    @Value("${azure.servicebus.queue.name:image-processing}")
+    private String queueName;
+
+    public String getQueueName() {
+        return queueName;
+    }
 
     @Bean
     ServiceBusAdministrationClient adminClient(AzureServiceBusProperties properties, TokenCredential credential) {
@@ -26,9 +34,9 @@ public class RabbitConfig {
     @Bean
     QueueProperties imageProcessingQueue(ServiceBusAdministrationClient adminClient) {
         try {
-            return adminClient.getQueue(IMAGE_PROCESSING_QUEUE);
+            return adminClient.getQueue(queueName);
         } catch (ResourceNotFoundException e) {
-            return adminClient.createQueue(IMAGE_PROCESSING_QUEUE);
+            return adminClient.createQueue(queueName);
         }
     }
 
@@ -40,5 +48,4 @@ public class RabbitConfig {
             return processorProperties;
         };
     }
-
 }

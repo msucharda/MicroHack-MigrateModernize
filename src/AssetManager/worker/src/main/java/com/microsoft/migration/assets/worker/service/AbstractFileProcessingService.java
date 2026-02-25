@@ -16,12 +16,10 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
-import static com.microsoft.migration.assets.worker.config.RabbitConfig.IMAGE_PROCESSING_QUEUE;
-
 @Slf4j
 public abstract class AbstractFileProcessingService implements FileProcessor {
 
-    @ServiceBusListener(destination = IMAGE_PROCESSING_QUEUE)
+    @ServiceBusListener(destination = "${azure.servicebus.queue.name:image-processing}")
     public void processImage(final ImageProcessingMessage message, 
                            @Header(ServiceBusMessageHeaders.RECEIVED_MESSAGE_CONTEXT) ServiceBusReceivedMessageContext context) {
         boolean processingSuccess = false;

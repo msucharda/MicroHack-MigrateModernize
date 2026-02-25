@@ -10,8 +10,6 @@ import org.springframework.messaging.handler.annotation.Header;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 
-import static com.microsoft.migration.assets.config.RabbitConfig.IMAGE_PROCESSING_QUEUE;
-
 /**
  * A backup message processor that serves as a monitoring and logging service.
  * 
@@ -27,7 +25,7 @@ public class BackupMessageProcessor {
      * Processes image messages from a backup queue for monitoring and resilience purposes.
      * Uses the same Service Bus API pattern as the worker module.
      */
-    @ServiceBusListener(destination = IMAGE_PROCESSING_QUEUE)
+    @ServiceBusListener(destination = "${azure.servicebus.queue.name:image-processing}")
     public void processBackupMessage(final ImageProcessingMessage message, 
                                     @Header(ServiceBusMessageHeaders.RECEIVED_MESSAGE_CONTEXT) ServiceBusReceivedMessageContext context) {
         try {

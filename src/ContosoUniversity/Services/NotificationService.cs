@@ -13,8 +13,10 @@ namespace ContosoUniversity.Services
 
         public NotificationService()
         {
-            // Get queue path from configuration or use default
-            _queuePath = ConfigurationManager.AppSettings["NotificationQueuePath"] ?? @".\Private$\ContosoUniversityNotifications";
+            // Prefer NOTIFICATION_QUEUE_PATH env var (ACA/container override), then config, then default
+            _queuePath = Environment.GetEnvironmentVariable("NOTIFICATION_QUEUE_PATH")
+                         ?? ConfigurationManager.AppSettings["NotificationQueuePath"]
+                         ?? @".\Private$\ContosoUniversityNotifications";
             
             // Ensure the queue exists
             if (!MessageQueue.Exists(_queuePath))

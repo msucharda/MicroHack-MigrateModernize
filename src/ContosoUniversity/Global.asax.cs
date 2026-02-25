@@ -24,7 +24,10 @@ namespace ContosoUniversity
 
         private void InitializeDatabase()
         {
-            var connectionString = System.Configuration.ConfigurationManager.ConnectionStrings["DefaultConnection"].ConnectionString;
+            // Prefer SQLSERVER_CONNECTION_STRING env var (required in containers/ACA)
+            var connectionString = Environment.GetEnvironmentVariable("SQLSERVER_CONNECTION_STRING")
+                                   ?? System.Configuration.ConfigurationManager.ConnectionStrings["DefaultConnection"].ConnectionString;
+
             var optionsBuilder = new DbContextOptionsBuilder<SchoolContext>();
             optionsBuilder.UseSqlServer(connectionString);
             

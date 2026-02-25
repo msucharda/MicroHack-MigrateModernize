@@ -27,8 +27,6 @@ import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-import static com.microsoft.migration.assets.config.RabbitConfig.IMAGE_PROCESSING_QUEUE;
-
 @Service
 @RequiredArgsConstructor
 @Profile("!dev") // Active when not in dev profile
@@ -40,6 +38,9 @@ public class AwsS3Service implements StorageService {
 
     @Value("${azure.storage.blob.container-name}")
     private String containerName;
+
+    @Value("${azure.servicebus.queue.name:image-processing}")
+    private String queueName;
 
     @Override
     public List<S3StorageItem> listObjects() {
@@ -93,7 +94,7 @@ public class AwsS3Service implements StorageService {
             file.getSize()
         );
         Message<ImageProcessingMessage> msg = MessageBuilder.withPayload(message).build();
-        serviceBusTemplate.send(IMAGE_PROCESSING_QUEUE, msg);
+        serviceBusTemplate.send(queueName, msg);
 
         // Create and save metadata to database
         ImageMetadata metadata = new ImageMetadata();

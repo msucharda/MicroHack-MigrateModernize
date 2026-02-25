@@ -23,18 +23,19 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static com.microsoft.migration.assets.config.RabbitConfig.IMAGE_PROCESSING_QUEUE;
-
 @Service
 @Profile("dev") // Only active when dev profile is active
 public class LocalFileStorageService implements StorageService {
 
     private static final Logger logger = LoggerFactory.getLogger(LocalFileStorageService.class);
-    
+
     private final ServiceBusTemplate serviceBusTemplate;
-    
+
     @Value("${local.storage.directory:../storage}")
     private String storageDirectory;
+
+    @Value("${azure.servicebus.queue.name:image-processing}")
+    private String queueName;
     
     private Path rootLocation;
 
@@ -107,7 +108,7 @@ public class LocalFileStorageService implements StorageService {
             file.getSize()
         );
         Message<ImageProcessingMessage> msg = MessageBuilder.withPayload(message).build();
-        serviceBusTemplate.send(IMAGE_PROCESSING_QUEUE, msg);
+        serviceBusTemplate.send(queueName, msg);
     }
 
     @Override

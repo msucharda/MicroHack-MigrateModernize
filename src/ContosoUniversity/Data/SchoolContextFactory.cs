@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using System;
 using System.Configuration;
 
 namespace ContosoUniversity.Data
@@ -7,7 +8,10 @@ namespace ContosoUniversity.Data
     {
         public static SchoolContext Create()
         {
-            var connectionString = ConfigurationManager.ConnectionStrings["DefaultConnection"].ConnectionString;
+            // Prefer SQLSERVER_CONNECTION_STRING env var (required in containers/ACA)
+            var connectionString = Environment.GetEnvironmentVariable("SQLSERVER_CONNECTION_STRING")
+                                   ?? ConfigurationManager.ConnectionStrings["DefaultConnection"].ConnectionString;
+
             var optionsBuilder = new DbContextOptionsBuilder<SchoolContext>();
             optionsBuilder.UseSqlServer(connectionString);
             
